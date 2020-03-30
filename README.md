@@ -31,14 +31,14 @@ function gmm {
 }
 
 # commits the staged changes
-# up to 3 paremeters are supported, like 'gcm --amend -m "My commit message" '
+# up to 3 parameters are supported, like 'gcm --amend -m "My commit message" '
 function gc {
         git commit $1 $2 $3
 }
 
 # stashes the changes
 function gs {
-	git stash $1
+	git stash $1 $2 $3
 }
 
 # applies the stashed changes
