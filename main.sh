@@ -1,3 +1,4 @@
+
 # Copy and paste the code into your bash configuration file
 
 alias upd='docker-compose up -d'
@@ -82,3 +83,4 @@ function set_git_aliases {
 
     echo 'Git aliases set successfully'
 }
+
