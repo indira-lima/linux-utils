@@ -74,13 +74,17 @@ function glo {
 }
 
 function set_git_aliases {
+	echo "Setting git aliases"
+	echo
+	echo "git lo -> git log --oneline"
     git config --global alias.lo 'log --oneline' &&
+	echo "git pm -> git pull origin master"
     git config --global alias.pm 'pull origin master' &&
+	echo "git go -> git checkout"
     git config --global alias.go 'checkout' &&
-    git config --global alias.gm 'go master' &&
-    git config --global alias.pho "push origin $(git branch --show-current)" &&
-    git config --global alias.plo "pull origin $(git branch --show-current)"
-
+	echo "git gm -> git go master"
+    git config --global alias.gm 'go master'
+	echo
     echo 'Git aliases set successfully'
 }
 
