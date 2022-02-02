@@ -4,6 +4,14 @@
 alias upd='docker-compose up -d'
 alias down='docker-compose down'
 
+function mkdircd {
+	if [ -n "$1" ]; then
+		mkdir $1 && cd $1
+	else
+		print "Usage: mkdircd <directory>"
+	fi
+}
+
 # open iterative terminal for a docker container
 function dexec {
 	if [ -n "$1" ]
