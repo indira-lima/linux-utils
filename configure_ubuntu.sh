@@ -12,8 +12,8 @@ echo "Upgrading packages"
 sudo apt full-upgrade
 echo
 
-echo "Installing system utils (vim, curl, git, vlc e pavucontrol)"
-sudo apt install vim curl git vlc pavucontrol -y
+echo "Installing system utils (vim, gedit, curl, git, vlc and pavucontrol)"
+sudo apt install vim gedit curl git vlc pavucontrol -y
 echo
 
 echo "Downloading a nice vim configuration (check ~/.vimrc to see what's beed added)"
@@ -56,6 +56,18 @@ echo
 echo "Installing Spotify"
 sudo snap install spotify
 echo
+
+if test -f "$(pwd)/set_shortcut.py"; then
+    echo "Setting custom keyboard shortcuts"
+    echo "[Tip] You can see the new shortcuts in System Settings > Keyboard Shurtcts (end of page)"
+
+    python3 set_shortcut.py 'Open Gedit' 'gedit' '<Super>G'
+    python3 set_shortcut.py 'Open Files' 'nautilus' '<Super>E'
+    python3 set_shortcut.py 'Open Calculator' 'gnome-calculator' '<Control><Alt>y'
+    python3 set_shortcut.py 'Open Chrome' 'google-chrome' '<Control><Alt>u'
+
+    echo
+fi
 
 echo "Installing Zsh and defining as default shell"
 sudo apt install zsh -y
