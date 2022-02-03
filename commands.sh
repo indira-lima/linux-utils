@@ -12,6 +12,15 @@ function mkdircd {
 	fi
 }
 
+# checks the sha256 sum of a file
+function sha256 {
+    if [ -n "$1" ]; then
+        echo "$(cat "$1.sha256sum" | sed 's/\s.*//g') $1" | sha256sum --check
+    else
+	echo "[sha256] Usage: sha256 <file_to_check> # note that there's must be a <file_to_check>.sha256sum file in the same directory"
+    fi
+}
+
 # open iterative terminal for a docker container
 function dexec {
 	if [ -n "$1" ]
