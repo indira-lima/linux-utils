@@ -16,12 +16,15 @@ echo "Installing system utils (vim, curl, git, vlc e pavucontrol)"
 sudo apt install vim curl git vlc pavucontrol -y
 echo
 
+echo "Downloading a nice vim configuration (check ~/.vimrc to see what's beed added)"
+wget https://gist.github.com/chrisyeh96/5d4479dee77e4b04786e9bc71f43967c/raw/27af7ff4456f39f6c79c6c8e6f5ded7932eddd28/.vimrc -O ~/.vimrc
+echo
+
 echo "Installing and configuring docker"
 sudo apt install docker docker-compose -y
 sudo usermod -aG docker $USER
 echo "Docker installed. Reboot your system to apply changes"
 echo
-
 
 echo "Downloading Google Chrome"
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
