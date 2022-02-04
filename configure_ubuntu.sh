@@ -51,6 +51,7 @@ wget https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip
 unzip /tmp/firacode.zip -d /tmp/firacode
 mv /tmp/firacode/ttf/* "$FONTS/"
 rm -R /tmp/firacode
+rm /tmp/firacode.zip
 echo
 
 echo "Installing Spotify"
