@@ -4,6 +4,17 @@
 alias upd='docker-compose up -d'
 alias down='docker-compose down'
 
+# uses recordmydesktop to save a timelapse video on ~/Videos/name.ogv
+# name can be especified in arguments (timelapse myVideo)
+function timelapse {
+
+    FILE="/home/$(whoami)/Videos/${1:-desktop_recording}.ogv"
+
+    echo "Starting recordmydesktop. Abort with Ctrl-C."
+    recordmydesktop --no-sound --on-the-fly-encoding --workdir /var/temp -o "$FILE"
+    echo "Stopped."
+}
+
 function mkdircd {
 	if [ -n "$1" ]; then
 		mkdir $1 && cd $1
