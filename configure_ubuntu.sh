@@ -2,7 +2,14 @@
 
 # script for installing apps into a newly installed ubuntu 
 
-FONTS=~/.local/share/fonts
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root, use 'sudo "$0"' instead" 1>&2
+   exit 1
+fi
+
+FONTS="/home/$(whoami)/.local/share/fonts"'
+
+[ ! -d "$FONTS" ] && mkdir "$FONTS"
 
 echo "Updating packages"
 sudo apt update
