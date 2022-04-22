@@ -7,7 +7,11 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-FONTS="/home/$(whoami)/.local/share/fonts"'
+# saves the script directory to search for other scripts later
+SCRIPT=$(readlink -f "$0")
+WORK_DIR=$(dirname "$SCRIPT")
+
+FONTS="/home/$(whoami)/.local/share/fonts"
 
 [ ! -d "$FONTS" ] && mkdir "$FONTS"
 
@@ -19,12 +23,22 @@ echo "Upgrading packages"
 sudo apt full-upgrade
 echo
 
-echo "Installing system utils (vim, gedit, curl, git, vlc and pavucontrol)"
-sudo apt install vim gedit curl git vlc pavucontrol -y
+UTILS="vim gedit curl git vlc pavucontrol alacarte gnome-teak-tool net-tools"
+echo "Installing some system utilities ($UTILS)"
+echo $UTILS | xargs sudo apt install -y
 echo
 
 echo "Downloading a nice vim configuration (check ~/.vimrc to see what's beed added)"
 wget https://gist.github.com/chrisyeh96/5d4479dee77e4b04786e9bc71f43967c/raw/27af7ff4456f39f6c79c6c8e6f5ded7932eddd28/.vimrc -O ~/.vimrc
+echo
+
+echo "Downloading and installing tldr++, a nice CLI manual for the most used commands (run `$ tldr tldr` for a usage tutorial)"
+wget -O /tmp/tldr.tgz https://github.com/isacikgoz/tldr/releases/download/v1.0.0-alpha/tldr_1.0.0-alpha_linux_amd64.tar.gz
+cd /tmp && tar -xzvf tldr.tgz
+cd tldr
+sudo mv tldr /usr/local/bin
+sudo chmod +x /usr/local/bin/tldr
+cd $WORK_DIR
 
 echo "Setting vim as default editor"
 export EDITOR=vim
@@ -36,20 +50,16 @@ sudo usermod -aG docker $USER
 echo "Docker installed. Reboot your system to apply changes"
 echo
 
-echo "Downloading Google Chrome"
+echo "Installing Google Chrome"
+
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 sudo apt update
+sudo apt install google-chrome-stable -y
 echo
-
-echo "Installing Google Chrome"
-sudo apt install google-chrome-stable -y && rm /etc/apt/sources.list.d/google-chrome.list
-echo
-
-echo "Downloading VSCode"
-wget https://code.visualstudio.com/sha/download\?build\=stable\&os\=linux-deb-x64 -O /tmp/vscode.deb
 
 echo "Installing VSCode"
+wget https://code.visualstudio.com/sha/download\?build\=stable\&os\=linux-deb-x64 -O /tmp/vscode.deb
 sudo apt install /tmp/vscode.deb -y && rm /tmp/vscode.deb
 
 echo "Installing Fira-Code font for VSCode"
@@ -61,11 +71,11 @@ rm -R /tmp/firacode
 rm /tmp/firacode.zip
 echo
 
-echo "Installing Spotify"
-sudo snap install spotify
-echo
+# echo "Installing Spotify"
+# sudo snap install spotify  -y
+# echo
 
-if test -f "$(pwd)/set_shortcut.py"; then
+if test -f "$WORK_DIR/set_shortcut.py"; then
     echo "Setting custom keyboard shortcuts"
     echo "[Tip] You can see the new shortcuts in System Settings > Keyboard Shurtcts (end of page)"
 
@@ -77,7 +87,7 @@ if test -f "$(pwd)/set_shortcut.py"; then
     echo
 fi
 
-echo "Installing Zsh and defining as default shell"
+echo "Installing Zsh and defining it as default shell"
 sudo apt install zsh -y
 chsh -s $(which zsh)
 echo
@@ -96,13 +106,13 @@ echo "zinit light zsh-users/zsh-autosuggestions" >> ~/.zshrc
 echo "zinit light zsh-users/zsh-completions" >> ~/.zshrc
 echo
 
-echo "Searching for util commands in $(pwd)/commands.sh"
-if test -f "$(pwd)/commands.sh"; then
-    cat "$(pwd)/commands.sh" >> ~/.zshrc
+echo "Searching for util commands in $WORK_DIR/commands.sh"
+if test -f "$WORK_DIR/commands.sh"; then
+    cat "$WORK_DIR/commands.sh" >> ~/.zshrc
     echo "Util commands pasted successfully into ~/.zshrc"
     echo "[Tip] Execute set_git_aliases command after shell reboot for setting some cool git aliases ;)"
 else
-    echo "file commands.sh not found in current dir. Ignoring."
+    echo "file commands.sh not found in the same current script directory. Ignoring."
 fi
 echo
 
@@ -119,7 +129,7 @@ wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20I
 wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf -O "$FONTS/MesloLGS NF Bold Italic.ttf"
 echo
 
-echo "Powerlevel10k installed. Execute `p10k configure` now for finish configuration?"
+echo "Powerlevel10k installed. Execute `p10k configure` now for finish configuration? It will run an iteractive script."
 read -p "[Y/n] " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
@@ -128,9 +138,11 @@ fi
 echo
 
 echo "End of script. Reboot is necessary in order to fully finish the configuration."
-echo "Reboot now? Remember closing all the running apps to avoid loss"
+echo "Reboot now? Remember closing all the running apps to avoid loss of data."
 read -p "[Y/n] " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     reboot
+else
+    echo "Bye!"
 fi
