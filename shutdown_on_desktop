@@ -1,0 +1,23 @@
+#!/usr/bin/bash
+
+#export PATH=/usr/bin/:/usr/local/bin/:/home/schuster/bin/:.
+#export HOME=/home/schuster/
+
+LOG=~/Desktop/sod.log
+
+if ! wmctrl -v &>/dev/null;
+then
+    echo "$(date +'%D %H:%M'): Command wmctrl not installed. Run:\n\tsudo apt install wmctrl\nto install" >> $LOG
+    exit
+fi
+
+WINDOWS=$(wmctrl -l)
+
+if ! [[ $WINDOWS ]];
+then
+    echo "Shuting down..." >> $LOG
+    gnome-session-quit --power-off > $LOG 2> $LOG
+else
+    echo "$(date +'%D %H:%M'): There are open windows:\n$WINDOWS" >> $LOG
+fi
+
