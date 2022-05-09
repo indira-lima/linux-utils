@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+if [[ ! $1 ]]
+then
+    echo "usage: sudo kill-port PORT"
+    exit 1
+fi
+
+
+PID=$(sudo lsof -ti ":$1")
+
+if [[ $PID ]]
+then
+    kill $PID
+fi
