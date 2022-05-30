@@ -83,6 +83,7 @@ if test -f "$WORK_DIR/set_shortcut.py"; then
     python3 set_shortcut.py 'Open Files' 'nautilus' '<Super>E'
     python3 set_shortcut.py 'Open Calculator' 'gnome-calculator' '<Control><Alt>y'
     python3 set_shortcut.py 'Open Chrome' 'google-chrome' '<Control><Alt>u'
+    python3 set_shortcut.py 'Turn mouse into sniper' 'xkill' '<Control><Alt>k'
 
     echo
 fi
