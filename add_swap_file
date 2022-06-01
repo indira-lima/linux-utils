@@ -1,0 +1,38 @@
+#!/usr/bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root"
+    exit
+fi
+
+# check if theres a argument, and if it matches the regex for a file size input,
+# like 1 (bytes), 1G, 4MB, 5K, 6KB etc
+if [[ ! $1 || ! $1 =~ ^([0-9]*\.?[0-9]+)(([KMGT]?)B?)$ ]]; then
+    echo "usage: add_swap_file <SIZE_NUMBER>[SIZE_MAGNITUDE] [SWAP_FIILE_NAME=swapfile]"
+    echo "example: add_swap_file 1G"
+    exit 1
+fi
+
+SWAP_FILE_NAME=swapfile
+
+if [[ $2 ]]; then
+    SWAP_FILE_NAME=$2
+    read -p "Creating a $1 swap file at /$SWAP_FILE_NAME. Are you sure? " -n 1 -r
+    echo
+    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+fi
+
+sudo fallocate -l $1 /$SWAP_FILE_NAME
+
+if [[ $? != 0 ]]; then
+    echo "Failed to allocate /$SWAP_FILE_NAME"
+    exit 1
+fi
+
+sudo chmod 600 /$SWAP_FILE_NAME
+sudo mkswap /$SWAP_FILE_NAME
+sudo swapon /$SWAP_FILE_NAME
+echo "/$SWAP_FILE_NAME swap                                            swap    defaults        0       0" | sudo tee -a /etc/fstab > /dev/null
+
+echo "Swap file of $1 created at /$SWAP_FILE_NAME!"
+sudo swapon --show
