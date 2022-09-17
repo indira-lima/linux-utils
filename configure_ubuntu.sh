@@ -84,6 +84,7 @@ if test -f "$WORK_DIR/set_shortcut.py"; then
     python3 set_shortcut.py 'Open Calculator' 'gnome-calculator' '<Control><Alt>y'
     python3 set_shortcut.py 'Open Chrome' 'google-chrome' '<Control><Alt>u'
     python3 set_shortcut.py 'Turn mouse into sniper' 'xkill' '<Control><Alt>k'
+    python3 set_shortcut.py 'Turn mouse into super sniper' 'pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY nice -n -20 xkill' '<Ctrl><Alt><Shift>K'
 
     echo
 fi
