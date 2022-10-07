@@ -1,0 +1,4 @@
+#!/bin/bash
+
+tar -cvzf ~/Documents/backups/backup.tgz ~/{Pictures/img,Documents/Documentos,bin,.config/i3,.zshrc,.tmux.conf,.vimrc}
+
