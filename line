@@ -1,0 +1,14 @@
+#!/usr/bin/zsh
+
+if [[ ! $1 ]]; then
+    echo "get the nth line of a file. usage: line n [m]"
+    echo "example: cat gatsby.txt | line 52  # get the 52th line"
+    echo "         cat gatsby.txt | line 2 7 # get the line 2 up to line 7"
+    exit 1
+fi
+
+if [[ $2 ]]; then
+    sed -n "$1,$2p"
+else
+    sed "$1q;d"
+fi
