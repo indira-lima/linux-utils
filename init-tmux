@@ -37,8 +37,10 @@ then
     
     # tries to run the post-init script
 
-    POST_INIT_SCRIPT="/home/schuster/bin/load-tmux-$WINDOW_NAME"
-    if [ -e "$POST_INIT_SCRIPT" ]; then
+    POST_INIT_SCRIPT="load-tmux-$WINDOW_NAME"
+    which "$POST_INIT_SCRIPT" > /dev/null
+
+    if [[ $? == 0 ]]; then
         tmux send-keys -t $SESSION_NAME "$POST_INIT_SCRIPT" Enter
     fi
 fi
