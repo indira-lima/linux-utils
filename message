@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+if [[ ! $1 || ! $2 ]]; then
+    echo "usage: message <ssh-host> <message>"
+    exit 1
+fi
+
+ssh $1 "DISPLAY=:0 notify-send \"$2\""
+
+
