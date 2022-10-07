@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+cat ~/.ssh/id_rsa.pub | xclip
+
+[[ $? == 0 ]] && echo "ssh public key copied to clipboard" || "failed to get ssh public key"
+
