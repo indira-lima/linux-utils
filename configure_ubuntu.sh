@@ -2,10 +2,10 @@
 
 # script for installing apps into a newly installed ubuntu 
 
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root, use 'sudo "$0"' instead" 1>&2
-   exit 1
-fi
+#if [[ $EUID -ne 0 ]]; then
+#   echo "This script must be run as root, use 'sudo "$0"' instead" 1>&2
+#   exit 1
+#fi
 
 # saves the script directory to search for other scripts later
 SCRIPT=$(readlink -f "$0")
@@ -16,14 +16,14 @@ FONTS="/home/$(whoami)/.local/share/fonts"
 [ ! -d "$FONTS" ] && mkdir "$FONTS"
 
 echo "Updating packages"
-sudo apt update
+sudo apt update -y
 echo
 
 echo "Upgrading packages"
-sudo apt full-upgrade
+sudo apt full-upgrade -y
 echo
 
-UTILS="vim gedit curl git vlc pavucontrol alacarte gnome-teak-tool net-tools"
+UTILS="vim gedit curl git vlc pavucontrol alacarte gnome-tweak-tool net-tools xbacklight playerctl pactl"
 echo "Installing some system utilities ($UTILS)"
 echo $UTILS | xargs sudo apt install -y
 echo
@@ -44,19 +44,8 @@ echo "Setting vim as default editor"
 export EDITOR=vim
 echo
 
-echo "Installing and configuring docker"
-sudo apt install docker docker-compose -y
-sudo usermod -aG docker $USER
-echo "Docker installed. Reboot your system to apply changes"
-echo
+#echo "Installing Opera (f*ck Chrome)"
 
-echo "Installing Google Chrome"
-
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-sudo apt update
-sudo apt install google-chrome-stable -y
-echo
 
 echo "Installing VSCode"
 wget https://code.visualstudio.com/sha/download\?build\=stable\&os\=linux-deb-x64 -O /tmp/vscode.deb
@@ -71,24 +60,6 @@ rm -R /tmp/firacode
 rm /tmp/firacode.zip
 echo
 
-# echo "Installing Spotify"
-# sudo snap install spotify  -y
-# echo
-
-if test -f "$WORK_DIR/set_shortcut.py"; then
-    echo "Setting custom keyboard shortcuts"
-    echo "[Tip] You can see the new shortcuts in System Settings > Keyboard Shurtcts (end of page)"
-
-    python3 set_shortcut.py 'Open Gedit' 'gedit' '<Super>G'
-    python3 set_shortcut.py 'Open Files' 'nautilus' '<Super>E'
-    python3 set_shortcut.py 'Open Calculator' 'gnome-calculator' '<Control><Alt>y'
-    python3 set_shortcut.py 'Open Chrome' 'google-chrome' '<Control><Alt>u'
-    python3 set_shortcut.py 'Turn mouse into sniper' 'xkill' '<Control><Alt>k'
-    python3 set_shortcut.py 'Turn mouse into super sniper' 'pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY nice -n -20 xkill' '<Ctrl><Alt><Shift>K'
-
-    echo
-fi
-
 echo "Installing Zsh and defining it as default shell"
 sudo apt install zsh -y
 chsh -s $(which zsh)
@@ -96,26 +67,6 @@ echo
 
 echo "Installing oh-my-zsh"
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-echo
-
-echo "Installing zinit (Zshell plugin manager)"
-sh -c "$(curl -fsSL https://git.io/zinit-install)"
-echo
-
-echo "Adding oh-my-zsh plugins into ~/.zshrc"
-echo "zinit light zdharma-continuum/fast-syntax-highlighting" >> ~/.zshrc
-echo "zinit light zsh-users/zsh-autosuggestions" >> ~/.zshrc
-echo "zinit light zsh-users/zsh-completions" >> ~/.zshrc
-echo
-
-echo "Searching for util commands in $WORK_DIR/commands.sh"
-if test -f "$WORK_DIR/commands.sh"; then
-    cat "$WORK_DIR/commands.sh" >> ~/.zshrc
-    echo "Util commands pasted successfully into ~/.zshrc"
-    echo "[Tip] Execute set_git_aliases command after shell reboot for setting some cool git aliases ;)"
-else
-    echo "file commands.sh not found in the same current script directory. Ignoring."
-fi
 echo
 
 echo "Installing Powerlevel10k"
@@ -131,20 +82,36 @@ wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20I
 wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf -O "$FONTS/MesloLGS NF Bold Italic.ttf"
 echo
 
-echo "Powerlevel10k installed. Execute `p10k configure` now for finish configuration? It will run an iteractive script."
-read -p "[Y/n] " -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    p10k configure
-fi
+echo "Powerlevel10k installed. Execute p10k configure after reset the terminal to finish configuration. It will run an iteractive script."
 echo
 
-echo "End of script. Reboot is necessary in order to fully finish the configuration."
-echo "Reboot now? Remember closing all the running apps to avoid loss of data."
-read -p "[Y/n] " -n 1 -r
+echo 'Installing zinit (Zshell plugin manager)'
+bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+
+echo "Adding oh-my-zsh plugins into ~/.zshrc"
+echo "zinit light zdharma-continuum/fast-syntax-highlighting" >> ~/.zshrc
+echo "zinit light zsh-users/zsh-autosuggestions" >> ~/.zshrc
+echo "zinit light zsh-users/zsh-completions" >> ~/.zshrc
+echo
+
+echo "Creating ~/bin directory"
+[ ! -d ~/bin ] && mkdir ~/bin
+
+if [ -f "$WOR_KDIR/commands.sh" ]; then
+    echo "commands.sh found in the current directory, copying it to ~/bin and sourcing in ~/.zshrc"
+    cd $WORK_DIR
+    cp ./commands.sh ~/bin
+    echo "source $WORK_DIR/commands.sh" >> ~/.zshrc
+fi
+
+
+echo 'End of script. Reboot is necessary in order to fully finish the configuration.'
+echo 'Reboot now? Remember closing all the running apps to avoid loss of data.'
+read -p '[Y/n] ' -n 1 -r
+echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     reboot
 else
     echo "Bye!"
-fi
+fi	
