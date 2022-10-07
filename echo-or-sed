@@ -1,0 +1,25 @@
+#!/usr/bin/bash
+
+function usage {
+    echo "usage: echo-or-sed <search string> <new value> <file>"
+    exit 1
+}
+
+if [[ ! $1 || ! $2 ||  ! $3 ]]
+then
+    usage
+else
+    if [ ! -f $3 ]; then
+        echo "File $3 not found"
+    fi
+fi
+
+GREP_RESULT=$(grep -m1 "$1" $3)
+if [[ $GREP_RESULT ]]
+then
+    [[ $1 == \^* ]] && GREP_RESULT="^$GREP_RESULT"
+    [[ $1 == *\$ ]] && GREP_RESULT="$GREP_RESULT$"
+    sed -i "s/$GREP_RESULT/$2/" $3
+else
+    echo $2 >> $3
+fi
