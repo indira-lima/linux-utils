@@ -1,6 +1,8 @@
 
 # Copy and paste the code into your bash configuration file
 
+alias cdcd='cd ~/Documents/code'
+alias h='history'
 alias upd='docker-compose up -d'
 alias down='docker-compose down'
 
