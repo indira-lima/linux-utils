@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+#export PATH=/usr/bin/:/usr/local/bin/:/home/schuster/bin/:.
+#export HOME=/home/schuster/
+
+LOG=/tmp/supershut.log
+
+gnome-session-quit --power-off > $LOG 2> $LOG
