@@ -1,0 +1,46 @@
+#!/usr/bin/zsh
+
+SHELLRC=~/.zshrc
+
+SESSION_NAME="default"
+GREP_STR="export TMUX_SESSION_NAME"
+EXPORT_STR="$GREP_STR=\"$SESSION_NAME\""
+
+# try to write the tmux session name to the environment variables
+echo-or-sed "^$GREP_STR" "$EXPORT_STR" $SHELLRC 2> /dev/null
+if [ $? != 0 ]; then
+    echo "Failed to export Tmux env variable for session name in $SHELLRC"
+    exit 1
+fi
+
+# check if the session "default" already exists
+tmux has-session -t $SESSION_NAME &> /dev/null
+
+# if it doesn't, create it
+if [ $? != 0 ] 
+then
+    # check if the window name was especified
+    [ ! -z $1 ] && WINDOW_NAME="$1" || WINDOW_NAME="home"
+
+    tmux -2 new-session -s $SESSION_NAME -n $WINDOW_NAME -d
+
+    GREP_STR="export TMUX_WINDOW_NAME"
+    EXPORT_STR="$GREP_STR=\"$WINDOW_NAME\""
+    echo-or-sed "^$GREP_STR" "$EXPORT_STR" $SHELLRC 2> /dev/null
+
+    if [ $? != 0 ]; then
+        echo "Failed to export Tmux env variable for window name in $SHELLRC"
+        exit 1
+    fi
+    
+    source $SHELLRC
+    
+    # tries to run the post-init script
+
+    POST_INIT_SCRIPT="/home/schuster/bin/load-tmux-$WINDOW_NAME"
+    if [ -e "$POST_INIT_SCRIPT" ]; then
+        tmux send-keys -t $SESSION_NAME "$POST_INIT_SCRIPT" Enter
+    fi
+fi
+
+tmux attach -t $SESSION_NAME
