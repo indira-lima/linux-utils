@@ -104,6 +104,8 @@ if [ -f "$WOR_KDIR/commands.sh" ]; then
     echo "source $WORK_DIR/commands.sh" >> ~/.zshrc
 fi
 
+echo "Installing tmux plugin manager"
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 echo 'End of script. Reboot is necessary in order to fully finish the configuration.'
 echo 'Reboot now? Remember closing all the running apps to avoid loss of data.'
