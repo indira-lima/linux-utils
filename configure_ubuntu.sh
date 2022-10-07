@@ -23,7 +23,7 @@ echo "Upgrading packages"
 sudo apt full-upgrade -y
 echo
 
-UTILS="vim gedit curl git vlc pavucontrol alacarte gnome-tweak-tool net-tools xbacklight playerctl pactl"
+UTILS="vim gedit curl git vlc pavucontrol alacarte gnome-tweak-tool net-tools xbacklight playerctl pactl keepassxc rofi scrot gpicview redshift-gtk flameshot"
 echo "Installing some system utilities ($UTILS)"
 echo $UTILS | xargs sudo apt install -y
 echo
