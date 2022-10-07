@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+OPERA_DIR='/usr/lib/x86_64-linux-gnu/opera'
+CHROMIUM_DIR='/snap/chromium/current/usr/lib/chromium-browser'
+
+[ -f "$OPERA_DIR/libffmpeg.so" ] && sudo mv "$OPERA_DIR/libffmpeg.so" "$OPERA_DIR/libffmpeg.so.bak"
+sudo cp "$CHROMIUM_DIR/libffmpeg.so" "$OPERA_DIR"
+
