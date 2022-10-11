@@ -40,10 +40,6 @@ sudo mv tldr /usr/local/bin
 sudo chmod +x /usr/local/bin/tldr
 cd $WORK_DIR
 
-echo "Setting vim as default editor"
-export EDITOR=vim
-echo
-
 #echo "Installing Opera (f*ck Chrome)"
 
 
@@ -92,6 +88,10 @@ echo "Adding oh-my-zsh plugins into ~/.zshrc"
 echo "zinit light zdharma-continuum/fast-syntax-highlighting" >> ~/.zshrc
 echo "zinit light zsh-users/zsh-autosuggestions" >> ~/.zshrc
 echo "zinit light zsh-users/zsh-completions" >> ~/.zshrc
+echo
+
+echo "Setting vim as default editor"
+echo "export EDITOR=vim" >> ~/.zshrc
 echo
 
 echo "Creating ~/bin directory"
