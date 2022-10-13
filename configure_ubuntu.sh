@@ -28,6 +28,12 @@ echo "Installing some system utilities ($UTILS)"
 echo $UTILS | xargs sudo apt install -y
 echo
 
+echo "Cloning i3-gaps (a fork of i3 with window gaps)"
+sudo add-apt-repository ppa:regolith-linux/release -y
+sudo apt install i3-gaps -y
+echo
+
+
 echo "Downloading a nice vim configuration (check ~/.vimrc to see what's beed added)"
 wget https://gist.github.com/chrisyeh96/5d4479dee77e4b04786e9bc71f43967c/raw/27af7ff4456f39f6c79c6c8e6f5ded7932eddd28/.vimrc -O ~/.vimrc
 echo
