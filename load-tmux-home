@@ -18,5 +18,5 @@ tmux send-keys -t "$T.0" "cd ~/Documents/code" Enter C-l
 tmux send-keys -t "$T.1" "cd ~/.config/i3" Enter C-l
 tmux split-window -v
 sleep 1
-tmux send-keys -t "$T.2" "cd ~ && cmatrix" Enter C-l
+tmux send-keys -t "$T.2" "cd ~/Documents/code/linux-utils && cmatrix" Enter C-l
 tmux select-pane -t "$T.0"
