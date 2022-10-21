@@ -4,6 +4,8 @@
 alias cdcd='cd ~/Documents/code'
 alias h='history'
 alias v='vim'
+alias rr='ranger'
+alias s='source ~/.zshrc'
 alias upd='docker-compose up -d'
 alias down='docker-compose down'
 alias start-emulator='player --vm-name "Custom Phone"'
