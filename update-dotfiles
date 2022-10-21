@@ -1,0 +1,15 @@
+#!/usr/bin/zsh
+
+# Script for copying all my desired configuration files
+# to the folder where I upload to my git repository
+#
+# @author Dahan Schuster
+
+FOLDERS=( "/home/schuster" "/home/schuster/.config" )
+FILES=( ".vimrc" ".zshrc" ".tmux.conf" "^i3$" "^rofi$")
+
+for folder in "${FOLDERS[@]}"; do
+  for file in "${FILES[@]}"; do
+    ls -a $folder | grep "$file" | xargs -I{} cp -iuRL $folder/{} ~/c/dotfiles
+  done
+done
