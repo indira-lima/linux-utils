@@ -1,5 +1,17 @@
 #!/usr/bin/zsh
 
+# Script for initializing a tmux session
+# 
+# A second argument can be passed to specify the name of the first window, $WINDOW_NAME
+# The script will also search for a post-init script in the $PATH named load-tmux-$WINDOW_NAME
+#
+# $WINDOW_NAME defaults to 'home' when no argument is passed
+#
+# Two environment variables are exported, $TMUX_SESSION_NAME and $TMUX_WINDOW_NAME, made
+# available for use inside the post-init scripts, or any other place
+#
+# @author Dahan Schuster <https://github.com/dahan-schuster>
+
 SHELLRC=~/.zshrc
 
 SESSION_NAME="default"
@@ -16,12 +28,14 @@ fi
 # check if the session "default" already exists
 tmux has-session -t $SESSION_NAME &> /dev/null
 
+
 # if it doesn't, create it
 if [ $? != 0 ] 
 then
     # check if the window name was especified
     [ ! -z $1 ] && WINDOW_NAME="$1" || WINDOW_NAME="home"
 
+    # create a new session with one window
     tmux -2 new-session -s $SESSION_NAME -n $WINDOW_NAME -d
 
     GREP_STR="export TMUX_WINDOW_NAME"
@@ -46,3 +60,4 @@ then
 fi
 
 tmux attach -t $SESSION_NAME
+
