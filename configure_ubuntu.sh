@@ -48,6 +48,17 @@ cd $WORK_DIR
 
 #echo "Installing Opera (f*ck Chrome)"
 
+echo "Installing Spotify"
+curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
+echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+sudo apt-get update && sudo apt-get install spotify-client
+sudo chmod a+wr /usr/share/spotify
+sudo chmod a+wr /usr/share/spotify/Apps -R
+echo "Spotify installed and permitions set for Spicetify"
+echo "Installing Spicetify and Spicetify Marketplace"
+curl -fsSL https://raw.githubusercontent.com/spicetify/spicetify-cli/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh | sh
+
 
 echo "Installing VSCode"
 wget https://code.visualstudio.com/sha/download\?build\=stable\&os\=linux-deb-x64 -O /tmp/vscode.deb
