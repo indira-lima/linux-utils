@@ -1,0 +1,21 @@
+#!/usr/bin/zsh
+
+# Script for checking for a second monitor called $HDMI_OUTPUT with xrandr
+# Also relaunches Polybar to enable it in the second monitor
+#
+# @author Dahan Schuster <github.com/dahan-schuster>
+
+[ -z $HDMI_OUTPUT ] && HDMI_OUTPUT='HDMI-A-0'
+[ -z $MODE ] && MODE='1440x900'
+[ -z $RATE ] && RATE='60'
+[ -z $DIRECTION ] && DIRECTION='right'
+[ -z $DEFAULT_OUTPUT ] && DEFAULT_OUTPUT='eDP'
+
+HDMI_DISCONNECTED=$(xrandr --query | grep "$HDMI_OUTPUT disconnected")
+echo $HDMI_DISCONNECTED 
+# string '$HDMI_OUTPUT disconnected' is null, the secont monitor is present
+if [ -z $HDMI_DISCONNECTED ]; then
+  xrandr --output $HDMI_OUTPUT --mode $MODE --rate $RATE --$DIRECTION-of $DEFAULT_OUTPUT
+  $HOME/.config/polybar/launch.sh
+fi
+  
