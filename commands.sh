@@ -6,11 +6,11 @@ alias h='history'
 alias v='vim'
 alias rr='ranger'
 alias s='source ~/.zshrc'
+alias cm='cmatrix'
 alias upd='docker-compose up -d'
 alias down='docker-compose down'
 alias start-emulator='player --vm-name "Custom Phone"'
 alias open='xdg-open'
-
 
 # uses recordmydesktop to save a timelapse video on ~/Videos/name.ogv
 # name can be especified in arguments (timelapse myVideo)
