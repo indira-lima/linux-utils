@@ -11,9 +11,16 @@
 		- resize shortcuts
 		- workspaces
 
-	- terminal (alactritty, kitty)
-		- tmux as multiplexer
-	- status bar (waybar, polybar)
+	- i3-gaps (add ppa and install)
+	- status bar (polybar)
 	- dmenu (rofi)
-	- window compositor (picom)
-	- 
+	- window compositor (compton)
+	- dev env
+    - neovim as code editor
+    - ranger as file manager
+    - restish as REST API CLI
+  	- terminal (alactritty, kitty)
+		- tmux as multiplexer
+  - other apps
+    - BetterDiscord
+    - Spicetify
