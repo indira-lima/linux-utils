@@ -5,10 +5,38 @@
 #
 # @author Dahan Schuster
 
-FILES_HOME=( ".vimrc" ".zshrc" ".tmux.conf" )
-FILES_CONFIG=( "^i3$" "^rofi$" "^polybar$" )
+[ -z $FILES_HOME ] && FILES_HOME=( ".vimrc" ".zshrc" ".tmux.conf" )
+[ -z $FILES_CONFIG ] && FILES_CONFIG=( "^i3$" "^rofi$" "^polybar$" "^compton$" "^BetterDiscord$" "^spicetify$")
 
-[ "$1" = '-d' ] && debug=1 || debug=0
+
+usage () {
+  echo "
+Make a copy of all the files listed in \$FILES_HOME and \$FILES_CONFIG that exists
+in the \$HOME and \$HOME/.config directories, respectivelly
+
+usage:
+update-dotfiles [-d] [-h]
+
+available options:
+
+Only one option can be used per time!
+
+-d | --debug  doesn't make any changes, just print to stdout exactly what will be copied
+-h | --help   print this help message and exit 
+"
+  exit 0
+}
+
+debug=0
+case "$1" in
+  --debug|-d)
+    debug=1
+    ;;
+  --help|-h)
+    usage
+    ;;
+esac
+
 export debug
 
 handlecp() {
