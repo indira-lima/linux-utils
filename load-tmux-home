@@ -14,10 +14,10 @@ tmux has-session -t "$T" 2> /dev/null \
     || tmux new-window -n "$WINDOW"
 
 tmux split-window -h
-tmux send-keys -t "$T.0" "cd ~/Documents/code && clear" Enter
+tmux send-keys -t "$T.0" "cd ~/code && clear" Enter
 tmux send-keys -t "$T.1" "cd ~/.config/ && rr" Enter
 tmux split-window -v
 sleep 0.5
-tmux send-keys -t "$T.2" "cd ~/Documents/code/linux-utils && cmatrix" Enter
+tmux send-keys -t "$T.2" "cd ~/code/linux-utils && cmatrix" Enter
 sleep 0.5
 tmux select-pane -t "$T.0"
