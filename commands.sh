@@ -1,9 +1,11 @@
 
 # Copy and paste the code into your bash configuration file
 
+export PATH="$PATH:$(dirname $0)"
+
 alias cdcd='cd ~/Documents/code'
 alias h='history'
-alias v='vim'
+alias v='nvim'
 alias nv='nvim'
 alias rr='ranger'
 alias s='source ~/.zshrc'
