@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# Clone a Git repository and change to it's directory
+# Can be configured with a config file
+# see gclone -h for help
+#
+# @Author: Dahan Schuster
+
+# Config file
+CONFIG_DIR="$HOME/.config/gclone"
+CONFIG_FILE="$CONFIG_DIR/gclone.conf"
+
+# Default values for the config options
+DEFAULT_USERNAME="your-username"
+GIT_PLATFORM="github.com"
+PROTOCOL="https"
+
+# Read config file if it exists
+# All config options can be overwritted by command line options
+if [ -f "$CONFIG_FILE" ]; then
+  source "$CONFIG_FILE"
+fi
+
+# Usage function
+usage() {
+  echo "Usage: gclone [-h] <repository> <directory_name>"
+  echo "  -h|--help: Print this help message"
+  echo "  -p|--protocol: The protocol to use. Can be ssh oh https. Default to https."
+  echo "  -g|--git-platform: The Git platform to use. Default to github.com"
+  echo "  repository: The name of the repository to clone, either in the format 'username/repository' or just 'repository'"
+  echo "  directory_name: The name of the directory for saving the repository. By default it's equals to the repository name"
+	echo ""
+	echo "All options can be configured in the ~/.config/gclone.conf file:"
+	echo "	PROTOCOL=ssh or http"
+	echo "	GIT_PLATFORM=any Git Platform that uses the same URL format as Github, Gitlab, Bitbucket etc"
+	echo "	DEFAULT_USERNAME=your default git username for when omitting it from the command"
+}
+
+# Parse the command line options
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -g|--git-platform) GIT_PLATFORM="$2"; shift; shift ;;
+        -p|--protocol) PROTOCOL="$2"; shift; shift ;;
+        -h|--help) usage; exit 0 ;;
+        *) REPO="$1"; shift ; DIR_NAME="$1"; shift ;;
+    esac
+done
+
+# Check if the repository name is provided
+if [ -z "$REPO" ]; then
+    echo "Error: Please provide a repository name"
+    exit 1
+fi
+
+# Check if the directory name is provided
+if [ -z "$DIR_NAME" ]; then
+		DIR_NAME=$REPO
+fi
+
+# Split the repository name into username and repository name
+IFS='/' read -ra REPO_ARR <<< "$REPO"
+
+# Set the username and repository name based on the format of the repository argument
+if [ ${#REPO_ARR[@]} -eq 1 ]; then
+    USERNAME="$DEFAULT_USERNAME"
+    REPONAME="${REPO_ARR[0]}"
+elif [ ${#REPO_ARR[@]} -eq 2 ]; then
+    USERNAME="${REPO_ARR[0]}"
+    REPONAME="${REPO_ARR[1]}"
+else
+    echo "Error: Invalid repository format"
+    exit 1
+fi
+
+# Build the URL for the repository based on the protocol and platform
+if [[ "$PROTOCOL" == "ssh" ]]; then
+  REPO_URL="git@$GIT_PLATFORM:$USERNAME/$REPONAME"
+else
+  REPO_URL="$PROTOCOL://$GIT_PLATFORM/$USERNAME/$REPONAME.git"
+fi
+
+# Tell what's happening
+echo
+echo "Cloning $GIT_PLATFORM/$USERNAME/$REPONAME into $DIR_NAME with $PROTOCOL"
+
+# Clone the repository
+git clone "$REPO_URL" "$DIR_NAME"
+
+# Check command exit code
+if (( $? == 0 )); then 
+	# Change to the repository directory
+	cd "./$DIR_NAME"
+	# Start a new shell inside the directory
+	exec zsh
+else
+	echo
+	echo "Failed to clone the repository. git clone exited with error code $?"
+fi
+
+
