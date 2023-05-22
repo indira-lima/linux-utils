@@ -1,20 +1,28 @@
 
 # Copy and paste the code into your bash configuration file
 
-export PATH="$PATH:$(dirname $0)"
+DIRNAME=$(dirname $0)
 
-alias cdcd='cd ~/Documents/code'
+export PATH="$PATH:$DIRNAME"
+
+# echo "checking for user defined alises in $DIRNAME/.aliases"
+if [ -f "$DIRNAME/.aliases" ]; then
+	# echo "sourcing user defined aliases"
+	source "$DIRNAME/.aliases"
+fi
+
 alias h='history'
 alias v='nvim'
 alias nv='nvim'
 alias rr='ranger'
 alias s='source ~/.zshrc'
 alias cm='cmatrix'
-alias upd='docker-compose up -d'
-alias down='docker-compose down'
-alias start-emulator='player --vm-name "Custom Phone"'
 alias open='xdg-open'
 alias bat='batcat'
+alias ls='exa'
+alias unblock-bluetooth='rfkill unblock all'
+alias less='less -R'
+alias grep='grep --color=always'
 
 # uses recordmydesktop to save a timelapse video on ~/Videos/name.ogv
 # name can be especified in arguments (timelapse myVideo)
@@ -29,7 +37,7 @@ function timelapse {
 
 function mkdircd {
 	if [ -n "$1" ]; then
-		mkdir $1 && cd $1
+		mkdir -p $1 && cd $1
 	else
 		print "Usage: mkdircd <directory>"
 	fi
