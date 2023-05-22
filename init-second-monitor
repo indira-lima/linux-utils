@@ -1,21 +1,135 @@
-#!/usr/bin/zsh
+#!/usr/bin/sh
 
-# Script for checking for a second monitor called $HDMI_OUTPUT with xrandr
-# Also relaunches Polybar to enable it in the second monitor
-#
 # @author Dahan Schuster <github.com/dahan-schuster>
 
-[ -z $HDMI_OUTPUT ] && HDMI_OUTPUT='HDMI-A-0'
-[ -z $MODE ] && MODE='1440x900'
-[ -z $RATE ] && RATE='60'
-[ -z $DIRECTION ] && DIRECTION='right'
-[ -z $DEFAULT_OUTPUT ] && DEFAULT_OUTPUT='eDP'
+echo
 
-HDMI_DISCONNECTED=$(xrandr --query | grep "$HDMI_OUTPUT disconnected")
-echo $HDMI_DISCONNECTED 
-# string '$HDMI_OUTPUT disconnected' is null, the secont monitor is present
-if [ -z $HDMI_DISCONNECTED ]; then
-  xrandr --output $HDMI_OUTPUT --mode $MODE --rate $RATE --$DIRECTION-of $DEFAULT_OUTPUT
-  $HOME/.config/polybar/launch.sh
+####################################################
+################### Functions ######################
+####################################################
+
+usage () {
+    echo "
+Script for checking for a second monitor called \$HDMI_OUTPUT with xrandr
+
+Available options:
+-m | --mirror		mirror output of primary screen to hdmi output
+-r | --right		place the second monitor to the right of the primary screen
+-l | --left		place the second monitor to the left of the primary screen
+-u | --up		place the second monitor above the primary screen
+-d | --down		place the second monitor below the primary screen
+-h | --help		show this help message and exit
+
+Environment variables:
+\$HDMI_OUTPUT		the name of the HDMI output, default to $HDMI_OUTPUT
+\$HDMI_MODE		the resolution used in the HDMI output, default to $HDMI_MODE 
+\$HDMI_RATE		the refresh rate of the HDMI output, default to $HDMI_RATE 
+\$DEFAULT_OUTPUT		the name of the default output, default to $DEFAULT_OUTPUT 
+"
+}
+
+connect_hdmi() {
+  xrandr --output $HDMI_OUTPUT --mode $MODE --rate $RATE --$POSITION $DEFAULT_OUTPUT
+}
+
+disconnect_hdmi() {
+	xrandr --auto
+}
+
+####################################################
+################## Environment  ####################
+####################################################
+
+# show debug messages if true
+DEBUG=0
+
+case $1 in
+	--mirror|-m)
+		HDMI_POSITION='same-as'
+	;;
+	--right|-r)
+		HDMI_POSITION='right-of'
+	;;
+	--left|-l)
+		HDMI_POSITION='left-of'
+	;;
+	--up|-u)
+		HDMI_POSITION='above'
+	;;
+	--down|-d)
+		HDMI_POSITION='below'
+	;;
+	--verbose|-v)
+		DEBUG=1
+	;;
+	--verbosier|-vv)
+		DEBUG=2
+	;;
+	--help|-h)
+		usage
+		exit
+	;;
+esac
+
+# store the xrandr --query output string for future uses
+XRANDR_QUERY=$(xrandr --query)
+
+
+USING_HDMI_FROM_ENV=$([ -z "$HDMI_OUTPUT" ] || echo "no" || echo "yes")
+USING_PRIMARY_FROM_ENV=$([ -z "$DEFAULT_OUTPUT" ] || echo "no" || echo "yes")
+
+# first check if the env variable exists, and only try to set the default value if it does not
+[ -z "$HDMI_OUTPUT" ] && HDMI_OUTPUT=$(echo $XRANDR_QUERY | grep "HDMI" | awk '{print $1}')
+[ -z "$DEFAULT_OUTPUT" ] && DEFAULT_OUTPUT=$(echo $XRANDR_QUERY | grep "connected primary" | awk '{print $1}')
+
+if [ -z "$DEFAULT_OUTPUT" ] || [ -z "$HDMI_OUTPUT" ]; then
+	echo "
+Could not determine screen outputs with xrandr.
+Hint: run xrandr --query to get the name of primary output and set the DEFAULT_OUTPUT and HDMI_OUTPUT
+environment variables.
+
+Run $0 --help for details.
+"
+exit
 fi
-  
+
+# check if the hdmi output is connected to the device
+# if string '$HDMI_OUTPUT disconnected' is null, the second monitor is present
+HDMI_DISCONNECTED=$(echo $XRANDR_QUERY | grep "$HDMI_OUTPUT disconnected")
+
+# if the HDMI is connected, get the best resolution and frame rate from the xrandr query
+HDMI_MODE_AND_RATE=""
+# awk will print the mode and rate separated by a space
+[ -z "$HDMI_DISCONNECTED"] && HDMI_MODE_AND_RATE=$(echo $XRANDR_QUERY | grep "$HDMI_OUTPUT" -A1 | awk '{print $1" "$2}')
+
+USING_MODE_FROM_ENV=$([ -z "$HDMI_MODE" ] || echo "no" || echo "yes")
+USING_RATE_FROM_ENV=$([ -z "$HDMI_RATE" ] || echo "no" || echo "yes")
+
+[ -z "$HDMI_MODE" ] && [ -z "$HDMI_MODE_AND_RATE" ] && HDMI_MODE=$(echo $HDMI_MODE_AND_RATE | awk '{print $1}') || HDMI_MODE='1440x900'
+[ -z "$HDMI_RATE" ] && [ -z "$HDMI_MODE_AND_RATE" ] && HDMI_RATE=$(echo $HDMI_MODE_AND_RATE | awk '{print $2}') || HDMI_RATE='60'
+
+if [ "$DEBUG" -gt 0 ]; then
+	if [ "$DEBUG" -eq "2" ]; then
+		echo $XRANDR_QUERY
+		echo
+	fi
+
+	echo "Using HDMI output from env? $USING_HDMI_FROM_ENV"
+	echo "Using Default output from env? $USING_PRIMARY_FROM_ENV"
+	echo "Using HDMI Mode from env? $USING_MODE_FROM_ENV"
+	echo "Using HDMI Rate from env? $USING_RATE_FROM_ENV"
+
+	# echo "Mode and Rate got from xrandr query: $HDMI_MODE_AND_RATE"
+
+	[ -z "$HDMI_DISCONNECTED" ] \
+		&& echo "HDMI is disconnected, will disable it" \
+		|| echo "connecting $HDMI_OUTPUT as $POSITION of $DEFAULT_OUTPUT, mode: $HDMI_MODE, rate: $HDMI_RATE"
+fi
+
+####################################################
+##################### Action  ######################
+####################################################
+
+# if there's a hdmi output connected to the device, enable it
+# otherwise, xrandr can automatically disable it
+[ -z "$HDMI_DISCONNECTED" ] && connect_hdmi || disconnect_hdmi;
