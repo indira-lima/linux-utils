@@ -1,0 +1,27 @@
+#!/usr/bin/bash
+
+# Screen savers for quickly hidden the terminal content
+#	It doesn't implement an actual screen saver, just get one
+#	of the listed screen saver commands (e.g. cbonsai, cmatrix)
+
+# define a list of screen saver commands and it's arguments
+COMMANDS=(\
+	# "cbonsai -S"
+	# "cmatrix"
+	"pipes.sh -t 3"
+	# "~/c/linux-utils/asciiquarium"
+)
+
+
+# get the list length, for limiting the $RANDOM value
+array_size=${#COMMANDS[@]}
+
+# use the special variable $RANDOM, to get a random
+# index limited by the $array_size
+random_index=$(expr $RANDOM % $array_size)
+
+# get the screen saver randomly
+screen_saver=${COMMANDS[$random_index]}
+
+# runs the screen saver with it's arguments
+exec $screen_saver
