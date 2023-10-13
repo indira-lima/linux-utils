@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+#
+# Script for dumping a kitty session using kitty-convert-dump
+# Made with ♥️  by @dahan-schuster
+
+kitty @ ls > ~/kitty-dump.json
+cat ~/kitty-dump.json | kitty-convert-dump > ~/kitty-session.kitty
