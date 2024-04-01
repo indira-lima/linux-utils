@@ -28,6 +28,11 @@ echo "Installing some system utilities ($UTILS)"
 echo $UTILS | xargs sudo apt install -y
 echo
 
+echo "Installing exa, a substitute for ls"
+wget -c http://old-releases.ubuntu.com/ubuntu/pool/universe/r/rust-exa/exa_0.9.0-4_amd64.deb
+sudo apt-get install ./exa_0.9.0-4_amd64.deb
+echo
+
 echo "Cloning i3-gaps (a fork of i3 with window gaps)"
 sudo add-apt-repository ppa:regolith-linux/release -y
 sudo apt install i3-gaps -y
