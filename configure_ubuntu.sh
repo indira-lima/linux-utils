@@ -46,7 +46,6 @@ echo
 echo "Downloading and installing tldr++, a nice CLI manual for the most used commands (run `$ tldr tldr` for a usage tutorial)"
 wget -O /tmp/tldr.tgz https://github.com/isacikgoz/tldr/releases/download/v1.0.0-alpha/tldr_1.0.0-alpha_linux_amd64.tar.gz
 cd /tmp && tar -xzvf tldr.tgz
-cd tldr
 sudo mv tldr /usr/local/bin
 sudo chmod +x /usr/local/bin/tldr
 cd $WORK_DIR
