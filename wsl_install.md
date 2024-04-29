@@ -219,7 +219,7 @@
                     "command": "unbound"
                 },
                 {
-                    "command": "openWindowRenamer",
+                    "command": "openTabRenamer",
                     "keys": "alt+comma"
                 },
                 {
