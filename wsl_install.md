@@ -121,3 +121,153 @@
       \   'cache_enabled': 0,
       \ }
     ```
+7. (Opcional) Adicionar atalhos de teclado ao terminal windows
+
+   - Baixar, se não tiver, o Windows Terminal Preview (versão com funcionalidades mais recentes)
+   - Abrir configurações do terminal no modo JSON
+   - Procurar pelo array `actions` e colar os valores abaixo na lista:
+  
+     ```json
+     {
+         //...
+        "actions": 
+            [
+                {
+                    "command": 
+                    {
+                        "action": "moveTab",
+                        "direction": "forward"
+                    },
+                    "keys": "alt+shift+]"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "copy",
+                        "singleLine": false
+                    },
+                    "keys": "ctrl+c"
+                },
+                {
+                    "command": "paste",
+                    "keys": "ctrl+v"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "moveFocus",
+                        "direction": "up"
+                    },
+                    "keys": "alt+k"
+                },
+                {
+                    "command": "find",
+                    "keys": "ctrl+shift+f"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "splitPane",
+                        "split": "auto",
+                        "splitMode": "duplicate"
+                    },
+                    "keys": "alt+shift+d"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "moveFocus",
+                        "direction": "right"
+                    },
+                    "keys": "alt+l"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "closeTab"
+                    }
+                },
+                {
+                    "command": "closePane",
+                    "keys": "alt+shift+w"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "moveFocus",
+                        "direction": "down"
+                    },
+                    "keys": "alt+j"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "moveFocus",
+                        "direction": "left"
+                    },
+                    "keys": "alt+h"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "moveTab",
+                        "direction": "backward"
+                    },
+                    "keys": "alt+shift+["
+                },
+                {
+                    "command": "unbound"
+                },
+                {
+                    "command": "openWindowRenamer",
+                    "keys": "alt+comma"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "swapPane",
+                        "direction": "left"
+                    },
+                    "keys": "alt+shift+h"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "swapPane",
+                        "direction": "down"
+                    },
+                    "keys": "alt+shift+j"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "swapPane",
+                        "direction": "up"
+                    },
+                    "keys": "alt+shift+k"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "swapPane",
+                        "direction": "right"
+                    },
+                    "keys": "alt+shift+l"
+                },
+                {
+                    "command": 
+                    {
+                        "action": "prevTab"
+                    },
+                    "keys": "alt+["
+                },
+                {
+                    "command": 
+                    {
+                        "action": "nextTab"
+                    },
+                    "keys": "alt+]"
+                }
+         ]
+     },
+     ```
