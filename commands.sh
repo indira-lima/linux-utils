@@ -132,6 +132,12 @@ function set_git_aliases {
     git config --global alias.go 'checkout' &&
 	echo "git gm -> git go master"
     git config --global alias.gm 'go master'
+	echo "git fa -> git fetch all"
+    git config --global alias.fa 'fetch -v --all'
+	echo "git bl -> git branch -l"
+    git config --global alias.bl 'branch -l'
+	echo "git ss -> git status -s"
+    git config --global alias.ss 'status -s'
 	echo
     echo 'Git aliases set successfully'
 }
