@@ -95,6 +95,9 @@
     
     # Instalar neovim no npm
     npm install -g neovim
+
+    # Configurar workspace.vim
+    echo "command! MakeWorkspace call s:MakeWorkspace(1)" >> ~/code/dotvim/pack/minpac/opt/vim-workspace/plugin/workspace.vim
     ```
 
 6. Adicionar configuração de clipboard no nvim usando win32yark
