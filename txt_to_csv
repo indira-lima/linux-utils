@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Define the directory (current directory by default)
+DIR=${1:-$(pwd)}
+
+# Check if the directory exists
+if [[ ! -d "$DIR" ]]; then
+  echo "Directory '$DIR' does not exist."
+  exit 1
+fi
+
+# Iterate over all .txt files in the specified directory
+for FILE in "$DIR"/*.txt; do
+  # Skip if no .txt files are found
+  [[ -e "$FILE" ]] || { echo "No .txt files found in $DIR"; exit 0; }
+
+  # Get the base name of the file (without the extension)
+  BASENAME=$(basename -- "$FILE" .txt)
+
+  # Create the new filename with .csv extension
+  CSV_FILE="$DIR/$BASENAME.csv"
+
+  # Copy the content of the .txt file to the .csv file
+  cp "$FILE" "$CSV_FILE"
+  echo "Converted $FILE to $CSV_FILE"
+done
+
+echo "All .txt files have been converted to .csv files."
+
