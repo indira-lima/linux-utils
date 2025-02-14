@@ -1,0 +1,43 @@
+#!/usr/bin/bash
+
+# verifica se o parâmetro foi passado
+if [ -z "$1" ]; then
+  echo "Parâmetro faltante. Usagem: xlsx-para-csv.sh <arquivo.xlsx>";
+  exit 1;
+fi
+
+
+# Verifica se o in2csv está instalado
+if ! [ -x "$(command -v in2csv)" ]; then
+  echo "in2csv não encontrado. Instale usando 'sudo apt install csvkit'";
+  exit 1;
+fi
+
+# verifica se o arquivo passado como primeiro parâmetro existe
+if ! [ -f "$1" ]; then
+  echo "Arquivo $1 não encontrado";
+  exit 1;
+fi
+
+echo "Convertendo $1 para .csv"
+
+TEMP_FILE="`mktemp -t xlsx-para-csv.XXXXXXXXX.csv`"
+
+# converte o arquivo para .csv
+in2csv "$1" > "$TEMP_FILE"
+
+if [ $? -ne 0 ]; then
+  echo "Ocorreu um erro ao realizar a conversão"
+  rm "$TEMP_FILE"
+  exit 1
+fi
+
+# renomeia o arquivo temporário para o mesmo nome do arquivo original, porém sem o .xlsx
+# mv $TEMP_FILE `basename "$1" .xlsx`.csv
+OUTPUT_FILE="`dirname "$1"`/`basename "$1" .xlsx`.csv"
+mv "$TEMP_FILE" "$OUTPUT_FILE"
+
+echo "Conversão concluída com sucesso"
+file "$OUTPUT_FILE"
+exit 0
+
