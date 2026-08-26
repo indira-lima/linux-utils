@@ -4,7 +4,7 @@
 # Can be configured with a config file
 # see gclone -h for help
 #
-# @Author: Dahan Schuster
+# @Author: Indira Lima
 
 # Config file
 CONFIG_DIR="$HOME/.config/gclone"

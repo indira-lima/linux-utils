@@ -3,7 +3,7 @@
 # Script for copying all my desired configuration files
 # to the folder where I upload to my git repository
 #
-# @author Dahan Schuster
+# @author Indira Lima
 
 [ -z $FILES_HOME ] && FILES_HOME=( ".vimrc" ".zshrc" ".tmux.conf" )
 [ -z $FILES_CONFIG ] && FILES_CONFIG=( "^i3$" "^rofi$" "^polybar$" "^compton$" "^BetterDiscord$" "^spicetify$")

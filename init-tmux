@@ -10,7 +10,7 @@
 # Two environment variables are exported, $TMUX_SESSION_NAME and $TMUX_WINDOW_NAME, made
 # available for use inside the post-init scripts, or any other place
 #
-# @author Dahan Schuster <https://github.com/dahan-schuster>
+# @author Indira Lima <https://github.com/indira-lima>
 
 SHELLRC=~/.zshrc
 
