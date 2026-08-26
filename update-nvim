@@ -1,0 +1,44 @@
+#!/usr/bin/zsh
+
+usage () {
+
+  echo "
+  Download and install the latest nvim version, using the link '$NVIM_DOWNLOAD_LINK'
+
+usage:
+update-nvim [-l|--link <DOWNLOAD_LINK>] [-h]
+
+available options:
+
+Only one option can be used per time!
+
+-l | --link  set the download link, if the default is broken
+-h | --help  print this help message and exit 
+"
+  exit 0
+}
+
+NVIM_DOWNLOAD_LINK="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+case "$1" in
+  --link|-l)
+    NVIM_DOWNLOAD_LINK=$2
+    ;;
+  --help|-h)
+    usage
+    ;;
+esac
+
+# split the url using slashes and get the last element, the file name
+FILE_NAME_EXT="${NVIM_DOWNLOAD_LINK##*/}"
+FILE_NAME=$(echo $FILE_NAME_EXT | rev | cut -d"." -f3  | rev)
+
+echo "nvim download link: $NVIM_DOWNLOAD_LINK"
+echo "if the download fails, check if the link is correct and use the -l option to set the url manually"
+echo
+
+curl -LO "$NVIM_DOWNLOAD_LINK" && sudo rm -rf /opt/nvim && sudo tar -C /opt -xzf $FILE_NAME_EXT
+
+echo
+echo "nvim downloaded successfuly"
+echo "if it's not already in the \$PATH, use the following command:"
+echo "echo \"export PATH=\\\"\\\$PATH:/opt/$FILE_NAME/bin\\\"\" >> ~/.zshrc"
