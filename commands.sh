@@ -14,15 +14,34 @@ fi
 alias h='history'
 alias v='nvim'
 alias nv='nvim'
-alias rr='ranger'
+# alias rr='. ranger' # cd para o diretório que o ranger estava quando sair
 alias s='source ~/.zshrc'
 alias cm='cmatrix'
 alias open='xdg-open'
-alias bat='batcat'
-alias ls='exa'
+# alias bat='batcat'
+# alias ls='exa'
 alias unblock-bluetooth='rfkill unblock all'
 alias less='less -R'
 alias grep='grep --color=always'
+alias rpo='sudo rpm-ostree'
+alias ff='fastfetch'
+alias of='onefetch'
+alias go='cd-onefetch'
+alias qdbus6='qdbus'
+
+function rr {
+	tmp="$(mktemp)"
+	ranger --choosedir="$tmp" "$@"
+	if [ -f "$tmp" ]; then
+	dir="$(cat "$tmp")"
+	rm -f "$tmp"
+	[ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && go "$dir"
+	fi
+}
+
+function cd-onefetch {
+	cd $1 && onefetch 2> /dev/null
+}
 
 # uses recordmydesktop to save a timelapse video on ~/Videos/name.ogv
 # name can be especified in arguments (timelapse myVideo)
@@ -62,16 +81,16 @@ function dexec {
 	fi
 }
 
-# Updates the branch master from the origin remote
+# Updates the branch main from the origin remote
 function gum {
-	git stash
-	git checkout master
-	git pull origin master
+	git stash -u -m "gum: alterações guardadas"
+	git checkout main
+	git pull origin main
 }
 
-# merges the branch master into the current branch
+# merges the branch main into the current branch
 function gmm {
-	git merge master
+	git merge main
 }
 
 # commits the staged changes
@@ -126,12 +145,12 @@ function set_git_aliases {
 	echo
 	echo "git lo -> git log --oneline"
     git config --global alias.lo 'log --oneline' &&
-	echo "git pm -> git pull origin master"
-    git config --global alias.pm 'pull origin master' &&
+	echo "git pm -> git pull origin main"
+    git config --global alias.pm 'pull origin main' &&
 	echo "git go -> git checkout"
     git config --global alias.go 'checkout' &&
-	echo "git gm -> git go master"
-    git config --global alias.gm 'go master'
+	echo "git gm -> git go main"
+    git config --global alias.gm 'go main'
 	echo "git fa -> git fetch all"
     git config --global alias.fa 'fetch -v --all'
 	echo "git bl -> git branch -l"
@@ -142,3 +161,67 @@ function set_git_aliases {
     echo 'Git aliases set successfully'
 }
 
+check_array() {
+    local name=$1
+
+    if (( $# != 1 )); then
+        print -u2 "usage: check_array array_name"
+        return 2
+    fi
+
+    if (( ${+parameters[$name]} )) &&
+       [[ ${(tP)name} == array* ]]; then
+        return 0
+    fi
+
+    return 1
+}
+
+get_random_index() {
+    if (( $# != 1 )); then
+        print -u2 "usage: get_random_index indexed_array"
+        return 2
+    fi
+
+    local name=$1
+
+    if ! check_array "$name"; then
+        print -u2 "$name is not an indexed array"
+        return 1
+    fi
+
+    # Indirectly copy the named array into a local array.
+    local -a values
+    values=( "${(@P)name}" )
+
+    if (( ${#values} == 0 )); then
+        print -u2 "$name is empty"
+        return 1
+    fi
+
+    local random_index
+    (( random_index = RANDOM % ${#values} + 1 ))
+
+    print -r -- "${values[$random_index]}"
+}
+
+switch_kde_activity() {
+    local activity_name=$1
+    local activity_hash
+
+    activity_hash=$(
+        kactivities-cli --list-activities |
+        awk -v name="$activity_name" '$3 == name { print $2; exit }'
+    )
+
+    if [[ -z $activity_hash ]]; then
+        print -u2 "Activity not found: $activity_name"
+        return 1
+    fi
+
+    kactivities-cli --set-current-activity "$activity_hash"
+}
+
+alo() {
+	notify-send $1 -u critical
+}
