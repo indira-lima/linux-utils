@@ -90,8 +90,10 @@
    # abrir nvim de novo para deixar o coc instalar as extensões
    cd ~/code/dotvim && nvim
 
-   # Instalar pynvim
+   # Instalar pynvim usando pip...
    pip3 install --upgrade pynvim
+   # .. ou usando o apt caso o pip informe que não vai instalar o pacote fora de um venv
+   sudo apt install python3-pynvim
 
    # Instalar neovim no npm
    npm install -g neovim
